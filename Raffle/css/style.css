@@ -108,3 +108,295 @@
 
 
 
+
+
+
+
+/* Footer Styles --------------------------------------------------------------------------------*/
+.footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.social-link {
+    color: white;
+    padding: 0 10px;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    text-decoration: underline;
+}
+
+/* Ensure body content does not go behind the footer */
+body {
+    padding-bottom: 60px; /* Adjust this value based on your footer's height */
+}
+
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #333;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --link-color: #4a90e2;
+    --hover-color: #357abd;
+}
+
+
+
+
+
+/* ---------------Contact Form Section */
+.contact-form-section {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    margin-top: 2%;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Contact Form Title */
+.contact-form-section h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+.contact-form-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form-section form * {
+    font-family: inherit;
+}
+
+/* Input and Textarea Styles */
+.contact-form-section input,
+.contact-form-section textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.contact-form-section input:focus,
+.contact-form-section textarea:focus {
+    outline: none;
+    border-color: #74ebd5;
+}
+
+/* Button Styles */
+.contact-form-section button {
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #74ebd5;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-form-section button:hover,
+.contact-form-section button:focus {
+    background-color: #333;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .contact-form-section {
+        width: 90%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Improvements for Visible Feedback */
+.contact-form-section .feedback-message {
+    display: none;
+    color: green;
+    margin-top: 20px;
+}
+
+.contact-form-section .feedback-message.show {
+    display: block;
+}
+   
+
+
+
+
+
+
+
+/* ---------------Aboutt */
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #6a11cb 50%, #2575fc 0%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+
+header p {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+    transform: translateZ(0); /* For better performance on the hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+    color: #007bff;
+}
+
+.card p {
+    color: #333;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .full-width {
+        grid-column: span 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.2s; }
+.card:nth-child(2) { animation-delay: 0.4s; }
+.card:nth-child(3) { animation-delay: 0.6s; }
+.card:nth-child(4) { animation-delay: 0.8s; }
+
+
+
+
+
+
+
+/* Footer Styles */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.social-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: #1da1f2;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .calendar-nav h2 {
+        font-size: 1.2rem;
+    }
+
+    .prev-month, .next-month {
+        font-size: 1.2rem;
+    }
+
+    .calendar-grid {
+        gap: 3px; /* Reduced gap for smaller screens */
+    }
+
+    .calendar-day {
+        padding: 10px;
+        min-height: 50px; /* Adjusted for smaller screens */
+    }
+}
+
+.calendar-day.not-current-month {
+    color: #cccccc; /* Grey out the non-current month days */
+}
+
+.calendar-day.today {
+    border: 2px solid red; /* Highlight the current day */
+    font-weight: bold;
+}
+.event-detail {
+    font-size: 0.75em;
+    color: #007BFF; /* Example color */
+    padding: 2px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.event-detail:hover {
+    color: #0056b3;
+}
+
