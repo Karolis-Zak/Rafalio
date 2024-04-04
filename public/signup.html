@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up and Login/Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Raffle news</h1>
+        <form id="newsletter-form" class="form">
+            <input type="text" placeholder="First Name" required>
+            <input type="text" placeholder="Last Name" required>
+            <input type="email" placeholder="Email" required>
+
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <div id="thankYouPopup" class="popup">
+            <p>Thank you for signing up!</p>
+            <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+        </div>
+    </div>
+
+    <div class="login-register-section">
+        <h1>Login / Register</h1>
+        <div class="form-toggle-buttons">
+            <button id="login-toggle" class="btn-toggle">Login</button>
+            <button id="register-toggle" class="btn-toggle">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="form form-hidden">
+            <input type="text" id="login-username" placeholder="Username" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <p id="login-error-message" class="login-error-message" style="display: none; color: red;"></p>
+            <button type="submit" class="btn">Login</button>
+            </form>
+    <!-- Register Form -->
+    <form id="register-form" class="form form-hidden">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="text" name="firstName" placeholder="First Name" required>
+        <input type="text" name="lastName" placeholder="Last Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <p id="password-strength" class="password-strength"></p>
+        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+        <p id="password-match" class="password-match"></p>
+        <p id="register-error-message" class="error-message" style="display: none;"></p>
+
+        <button type="submit" class="btn">Register</button>
+    </form>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2024 Rafalio. All rights reserved.</p>
+    <div class="social-links">
+        <a href="https://facebook.com" target="_blank">Facebook</a>
+        <a href="https://twitter.com" target="_blank">Twitter</a>
+        <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+        <!-- Removed duplicate Twitter link and corrected the name for consistency -->
+    </div>
+</footer>
+
+<script src="javascript/Script.js"></script>
+
+
+<script>
+    // Existing script content...
+    
+    // Handle Newsletter Form Submission with Email Notification
+    document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+    
+        const formData = {
+            firstName: document.querySelector('#newsletter-form input[type="text"][placeholder="First Name"]').value,
+            lastName: document.querySelector('#newsletter-form input[type="text"][placeholder="Last Name"]').value,
+            email: document.querySelector('#newsletter-form input[type="email"]').value,
+            interests: Array.from(document.querySelectorAll("#newsletter-form input[type='checkbox']:checked")).map(checkbox => checkbox.value)
+        };
+    
+        // Assuming your server is set to accept JSON and you have configured CORS if needed
+        fetch('/signup-newsletter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: formData.email }) // Only sending the email as per your server.js expectations
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert("Thank you for signing up for our newsletter! Check your email for confirmation.");
+            // Optionally, hide the signup form or reset it
+            document.getElementById('newsletter-form').reset();
+            thankYouPopup.classList.remove('form-hidden'); // Display the thank you message if not using an alert
+        })
+        .catch((error) => {
+            console.error('There has been a problem with your fetch operation:', error);
+            alert("There was a problem with the signup. .");
+        });
+    });
+    
+
+    // Handle Login Form Submission with Redirect on Success
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const loginData = {
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value
+    };
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+    })
+    .then(response => response.json()) // Expecting JSON response from the server
+    .then(data => {
+        if (data.message === 'Login Successful') {
+            // Store token in localStorage or session as needed
+            localStorage.setItem('userToken', data.token);
+            // Redirect to the profile page
+            window.location.href = 'profile.html'; // Adjust the URL as necessary
+        } else {
+            // Display login failed message
+            displayLoginErrorMessage('Login failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Login Error:', error);
+        displayLoginErrorMessage('Login details dont match. Please try again');
+    });
+});
+
+function displayLoginErrorMessage(message) {
+    // Assuming an element with the ID 'login-error-message' exists for displaying login errors
+    const errorMessageElement = document.getElementById('login-error-message');
+    if (!errorMessageElement) {
+        console.error('Login error message element not found');
+        return;
+    }
+    errorMessageElement.textContent = message;
+    errorMessageElement.style.display = 'block'; // Make sure the element is visible
+}
+
+    </script>
+    
+
+
+
+
+
+</body>
+</html>

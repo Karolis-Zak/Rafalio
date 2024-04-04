@@ -1,0 +1,315 @@
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Utility Classes */
+.btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2%;
+    background-color: #333; /* Dark header background */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.logo {
+    color: #ff5722; /* Stylish orange for logo */
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+.nav-link {
+    color: #ddd; /* Light color for contrast */
+    text-decoration: none;
+    margin-left: 2rem;
+    transition: color 0.3s;
+}
+.nav-link:hover, .nav-link.active {
+    color: #4CAF50; /* Green for active/hover state */
+}
+
+/* Home Page Specific Styles -------------------------------------------------------------------------------------------------*/
+.main-section {
+    height: 95vh;
+    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)), url('/path-to-hero-background.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+}
+.hero {
+    max-width: 700px;
+}
+.hero h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ffeb3b;
+}
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Signup Page Specific Styles --------------------------------------------------------------------------------------*/
+
+.signup-container {
+    background-color: #f8f8f8;  /* Light grey background */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form input[type="text"],
+.form input[type="email"],
+.form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+@media (max-width: 768px) {
+    .signup-container {
+        width: 80%;
+    }
+}
+
+
+
+
+
+
+/* Signup Page Specific Styles --------------------------------------------------------------------------------------*/
+
+.signup-container {
+    background-color: #f8f8f8;  /* Light grey background */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form input[type="text"],
+.form input[type="email"],
+.form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+@media (max-width: 768px) {
+    .signup-container {
+        width: 80%;
+    }
+}
+
+
+
+/* Register/Login Page Specific Styles --------------------------------------------------------------------------------------*/
+
+
+/* Login/Register Section Styling */
+.login-register-section {
+    background-color: #f8f8f8; /* Match the newsletter section background */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.btn-toggle {
+    background-color: #007bff; /* A distinct color for toggling buttons */
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-toggle:hover {
+    background-color: #0056b3; /* Darker shade for hover */
+}
+
+.form-hidden {
+    display: none; /* Initially hide the forms */
+}
+
+/*  Form Styling */
+#login-form, #register-form {
+
+    flex-direction: column;
+    gap: 15px;
+}
+
+#login-form input,
+#register-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+.password-strength, .password-match {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .login-register-section {
+        width: 80%; /* Adjust width for mobile view */
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Footer Styles */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.social-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: #1da1f2;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .calendar-nav h2 {
+        font-size: 1.2rem;
+    }
+
+    .prev-month, .next-month {
+        font-size: 1.2rem;
+    }
+
+    .calendar-grid {
+        gap: 3px; /* Reduced gap for smaller screens */
+    }
+
+    .calendar-day {
+        padding: 10px;
+        min-height: 50px; /* Adjusted for smaller screens */
+    }
+}
+
+.calendar-day.not-current-month {
+    color: #cccccc; /* Grey out the non-current month days */
+}
+
+.calendar-day.today {
+    border: 2px solid red; /* Highlight the current day */
+    font-weight: bold;
+}
+.event-detail {
+    font-size: 0.75em;
+    color: #007BFF; /* Example color */
+    padding: 2px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.event-detail:hover {
+    color: #0056b3;
+}
+
