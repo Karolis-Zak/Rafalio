@@ -1,0 +1,110 @@
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Utility Classes */
+.btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2%;
+    background-color: #333; /* Dark header background */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.logo {
+    color: #ff5722; /* Stylish orange for logo */
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+.nav-link {
+    color: #ddd; /* Light color for contrast */
+    text-decoration: none;
+    margin-left: 2rem;
+    transition: color 0.3s;
+}
+.nav-link:hover, .nav-link.active {
+    color: #4CAF50; /* Green for active/hover state */
+}
+
+/* Home Page Specific Styles -------------------------------------------------------------------------------------------------*/
+.main-section {
+    height: 95vh;
+    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)), url('/path-to-hero-background.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+}
+.hero {
+    max-width: 700px;
+}
+.hero h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ffeb3b;
+}
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Signup Page Specific Styles --------------------------------------------------------------------------------------*/
+
+.signup-container {
+    background-color: #f8f8f8;  /* Light grey background */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form input[type="text"],
+.form input[type="email"],
+.form input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+@media (max-width: 768px) {
+    .signup-container {
+        width: 80%;
+    }
+}
+
+
+
