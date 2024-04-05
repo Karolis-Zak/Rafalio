@@ -12,7 +12,6 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
 }
 
 
@@ -24,7 +23,6 @@ body {
 /* Stylish Header */
 header {
     width: 100%;
-    padding: 1rem 0;
     background: #2e005e;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     position: fixed;
@@ -66,7 +64,6 @@ header {
 
 /* Banner with Glowing Text */
 .banner {
-    margin-top: 60px;
     text-align: center;
 }
 
@@ -235,11 +232,6 @@ main {
     transition: max-height 0.3s ease-in-out;
 }
 
-/* Expanded form styling */
-.form-expanded {
-    max-height: 1000px; /* Arbitrary large max-height for the transition effect */
-}
-
 
 
 /* Show All Expired Raffles Button */
@@ -300,3 +292,120 @@ main {
     color: #666;
 }
 
+
+
+
+/* Register/Login Page Specific Styles --------------------------------------------------------------------------------------*/
+
+
+/* Login/Register Section Styling */
+.login-register-section {
+    border-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.btn-toggle {
+    background-color: #007bff; /* A distinct color for toggling buttons */
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-toggle:hover {
+    background-color: #0056b3; /* Darker shade for hover */
+}
+
+/* Adjustments for smooth animations */
+.form-hidden {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: opacity 0.3s, max-height 0.5s, visibility 0s 0.5s; /* Adjust timing as needed */
+}
+
+.form {
+    max-height: 0; /* Start with max-height at 0 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, max-height 0.5s, visibility 0s 0.3s; /* Ensure visibility transitions correctly */
+    padding: 0 20px; /* Adjust padding as necessary */
+}
+
+/* When form is active, we want to reverse the visibility and max-height */
+.form-active {
+    max-height: 1000px; /* Adjust based on the form's actual max height */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s, max-height 0.5s; /* Adjust timing as needed */
+}
+
+/* Further adjustments for inputs and buttons for consistency */
+#login-form input, #register-form input, button.btn {
+    width: calc(100% - 20px); /* Considering padding */
+    margin: 10px 0; /* Adjust margins for spacing */
+}
+
+/* Enhance the focus state for better accessibility */
+input:focus, button:focus {
+    outline: 2px solid #007bff; /* Highlight focus state */
+}
+
+/* Additional responsive adjustments as needed */
+@media (max-width: 768px) {
+    .login-register-section {
+        width: 95%; /* More width for smaller screens */
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#login-form input,
+#register-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+.password-strength, .password-match {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .login-register-section {
+        width: 80%; /* Adjust width for mobile view */
+    }
+}
