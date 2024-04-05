@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raffle Mania - Login/Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="javascript/Script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="banner">
+            <h1>User Profile</h1>
+            <p>View your information and enrolled raffles.</p>
+        </div>
+        <nav>
+            <ul class="navigation">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="raffle.html">Raffles</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="user-info">
+            <h2>User Information</h2>
+            <p><strong>Name:</strong> <span id="user-name">John Doe</span></p>
+            <p><strong>Last Name:</strong> <span id="user-last-name">Doe</span></p>
+            <p><strong>Email:</strong> <span id="user-email">john.doe@example.com</span></p>
+        </section>
+
+        <section class="enrolled-raffles">
+            <h2>Enrolled Raffles</h2>
+            <div id="raffles-list" class="raffles-list">
+                <!-- Raffle entries will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Raffle Mania. All rights reserved.</p>
+    </footer>
+
+
+    <script src="javascript/profile.js" defer></script>
+    <script src="javascript/authentication.js" defer></script>
+    <script src="javascript/login.js" defer></script>
+</body>
+</html>

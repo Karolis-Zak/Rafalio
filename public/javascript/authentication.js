@@ -68,14 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         matchText.textContent = passwordInput.value !== confirmPasswordInput.value ? "Passwords do not match." : "";
     }
 
-
-
-
-
-
-
-
-
     document.getElementById('register-form').addEventListener('submit', function(e) {
         e.preventDefault();
 

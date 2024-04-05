@@ -367,26 +367,6 @@ input:focus, button:focus {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #login-form input,
 #register-form input {
     padding: 10px;
@@ -407,5 +387,59 @@ input:focus, button:focus {
 @media (max-width: 768px) {
     .login-register-section {
         width: 80%; /* Adjust width for mobile view */
+    }
+}
+
+
+
+
+/* profile Page Specific Styles --------------------------------------------------------------------------------------*/
+.user-info, .enrolled-raffles {
+    background-color: #ffffff;
+    color: #333;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    text-align: left;
+}
+
+.user-info h2, .enrolled-raffles h2 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.user-info p, .enrolled-raffles p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Styling for raffles list similar to the main raffle page */
+.raffles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+.raffle-entry h3 {
+    font-size: 1.2rem;
+    margin: 0 0 10px;
+    color: #52057b; /* A deep purple for contrast */
+}
+
+.raffle-entry p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    .user-info, .enrolled-raffles {
+        width: 90%;
     }
 }

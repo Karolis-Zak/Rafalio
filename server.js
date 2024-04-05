@@ -8,12 +8,17 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+
 // MySQL Database Connection
 const db = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'Zaksauskas123',
-    database: 'codeh'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect(err => {
@@ -37,26 +42,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Newsletter Signup Endpoint
-app.post('/signup-newsletter', async (req, res) => {
-    const { email } = req.body;
-    // Store email in database logic here...
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Newsletter Signup Confirmation',
-        text: 'Thank you for signing up for our newsletter!'
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log(error);
-            res.status(500).send('Error sending email');
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.send('Thank you for signing up for our newsletter!');
-        }
-    });
-});
+
 
 // User Registration Endpoint
 app.post('/register', async (req, res) => {
@@ -97,20 +83,26 @@ app.post('/register', async (req, res) => {
 // User Login Endpoint
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-        if (err || results.length === 0) {
-            res.status(401).send('Authentication failed');
-        } else {
-            const user = results[0];
-            if (await bcrypt.compare(password, user.password)) {
-                const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-                res.json({ message: 'Login successful', token });
-            } else {
-                res.status(401).send('Authentication failed');
-            }
+    const query = 'SELECT * FROM users WHERE username = ?';
+
+    db.query(query, [username], async (err, results) => {
+        if (err) {
+            // Server error handling
+            return res.status(500).send('Error on the server.');
         }
+
+        if (results.length === 0 || !await bcrypt.compare(password, results[0].password)) {
+            // Either username does not exist or password does not match
+            return res.status(401).send('Wrong login details, please try again.');
+        }
+
+        // User authenticated, create token
+        const token = jwt.sign({ userId: results[0].user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Send token and redirect to profile page
+        res.json({ message: 'Login Successful', token, redirect: '/profile.html' });
     });
 });
+
 
 // JWT Secret Key
 const JWT_SECRET = 'https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.XbPfbIHMI6arZ3Y922BhjWgQzWXcXNrz0ogtVhfEd2o';
@@ -136,7 +128,7 @@ app.post('/login', (req, res) => {
 
         if (match) {
             const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-            res.json({ message: 'Login Successful', token });
+            res.json({ message: 'Login successful', token });
         } else {
             res.status(401).send('Username or password is incorrect');
         }
@@ -161,25 +153,26 @@ app.post('/api/raffles', (req, res) => {
 
 
 
-// User Info Endpoint
+// Fetch User Info (Protected Route)
 app.get('/api/user-info', (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, JWT_SECRET);
-
-        const query = 'SELECT first_name, last_name, email FROM users WHERE id = ?';
-
+        const query = 'SELECT first_name, last_name, email FROM users WHERE user_id = ?';
         db.query(query, [decoded.userId], (err, results) => {
             if (err) {
                 throw err;
             }
-            res.json(results[0]);
+            if (results.length > 0) {
+                res.json(results[0]);
+            } else {
+                res.status(404).send('User not found');
+            }
         });
     } catch (error) {
         res.status(401).send('Invalid token');
     }
 });
-
 
 // Raffle Fetching Endpoint
 app.get('/api/raffles', (req, res) => {
@@ -193,6 +186,31 @@ app.get('/api/raffles', (req, res) => {
         }
     });
 });
+
+
+
+// Fetch User Info (Protected Route)
+app.get('/api/user-info', (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const query = 'SELECT first_name, last_name, email FROM users WHERE user_id = ?';
+        db.query(query, [decoded.userId], (err, results) => {
+            if (err) {
+                throw err;
+            }
+            if (results.length > 0) {
+                res.json(results[0]);
+            } else {
+                res.status(404).send('User not found');
+            }
+        });
+    } catch (error) {
+        res.status(401).send('Invalid token');
+    }
+});
+
+
 
 // Start the server
 app.listen(port, () => {
