@@ -1,315 +1,302 @@
-/* Google Font Import */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-/* Reset Styles */
-* {
+/* Basic Reset */
+html, body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Utility Classes */
-.btn {
-    background-color: #4CAF50; /* Green */
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle, #1e0039, #0d0021);
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s, transform 0.2s;
-}
-.btn:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-/* Header Styles */
-.header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2%;
-    background-color: #333; /* Dark header background */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.logo {
-    color: #ff5722; /* Stylish orange for logo */
-    font-weight: 700;
-    font-size: 1.8rem;
-}
-.nav-link {
-    color: #ddd; /* Light color for contrast */
-    text-decoration: none;
-    margin-left: 2rem;
-    transition: color 0.3s;
-}
-.nav-link:hover, .nav-link.active {
-    color: #4CAF50; /* Green for active/hover state */
-}
-
-/* Home Page Specific Styles -------------------------------------------------------------------------------------------------*/
-.main-section {
-    height: 95vh;
-    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)), url('/path-to-hero-background.jpg') no-repeat center center/cover;
-    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    color: #fff;
-}
-.hero {
-    max-width: 700px;
-}
-.hero h2 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: #ffeb3b;
-}
-.hero p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+    overflow-x: hidden;
 }
 
-/* Signup Page Specific Styles --------------------------------------------------------------------------------------*/
 
-.signup-container {
-    background-color: #f8f8f8;  /* Light grey background */
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 40%;
-    margin: 40px auto;
-    text-align: center;
+
+body {
+    animation: glowingBackground 10s ease infinite;
 }
 
-.form {
+/* Stylish Header */
+header {
+    width: 100%;
+    padding: 1rem 0;
+    background: #2e005e;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.navigation {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
 }
 
-.form input[type="text"],
-.form input[type="email"],
-.form input[type="password"] {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-
-@media (max-width: 768px) {
-    .signup-container {
-        width: 80%;
-    }
-}
-
-
-
-
-
-
-/* Signup Page Specific Styles --------------------------------------------------------------------------------------*/
-
-.signup-container {
-    background-color: #f8f8f8;  /* Light grey background */
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 40%;
-    margin: 40px auto;
-    text-align: center;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.form input[type="text"],
-.form input[type="email"],
-.form input[type="password"] {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-
-@media (max-width: 768px) {
-    .signup-container {
-        width: 80%;
-    }
-}
-
-
-
-/* Register/Login Page Specific Styles --------------------------------------------------------------------------------------*/
-
-
-/* Login/Register Section Styling */
-.login-register-section {
-    background-color: #f8f8f8; /* Match the newsletter section background */
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 40%;
-    margin: 2rem auto;
-    text-align: center;
-}
-
-.btn-toggle {
-    background-color: #007bff; /* A distinct color for toggling buttons */
+.navigation a {
     color: white;
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 1.1rem;
+    position: relative;
+    
+}
+
+.navigation a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #ff4081;
+    bottom: -5px;
+    left: 0;
+    transform: scaleX(0);
+    transition: transform 0.5s ease;
+}
+
+.navigation a:hover::after, .navigation a:focus::after {
+    transform: scaleX(1);
+}
+
+/* Banner with Glowing Text */
+.banner {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.banner h1 {
+    font-size: 2.5rem;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 18px rgba(167, 35, 35, 0.5), 0 0 10px rgba(95, 14, 14, 0.5), 0 0 12px rgba(133, 17, 17, 0.7), 0 0 14px rgba(228, 17, 35, 0.705), 0 0 16px rgba(226, 9, 9, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(17, 228, 17, 0.7), 0 0 14px rgrgba(21, 243, 113, 0.8)0 0 16px rgba(13, 143, 218, 0.9), 0 0 18px rgb(115, 219, 17), 0 0 20px rrgb(207, 10, 119)
+    }
+}
+
+
+
+/* Main Content Styling */
+main {
+
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px;
+    margin: 120px auto 50px;
+    text-align: center;
+}
+
+/* Footer with Pulse Effect */
+footer {
+    position: fixed;
+    padding: 1rem;
+    background: #2e005e;
+    width: 100%;
+    text-align: center;
+
+    bottom: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+footer {
+    animation: pulse 2s infinite;
+}
+
+
+
+
+
+
+
+
+
+/* Main content */
+main {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+/* Raffle list and entries */
+#raffle-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.raffle-entry {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; /* Fixed width or use percentage for responsive design */
+}
+
+.raffle-entry h2 {
+    color: #ffde59;
+}
+
+.raffle-img {
+    max-width: 100%;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-.btn-toggle:hover {
-    background-color: #0056b3; /* Darker shade for hover */
+.raffle-description {
+    margin: 10px 0;
 }
 
-.form-hidden {
-    display: none; /* Initially hide the forms */
-}
-
-/*  Form Styling */
-#login-form, #register-form {
-
-    flex-direction: column;
-    gap: 15px;
-}
-
-#login-form input,
-#register-form input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-
-.password-strength, .password-match {
-    color: red;
-    font-size: 0.8rem;
-    margin-top: -10px;
+.raffle-timer {
+    font-weight: bold;
     margin-bottom: 10px;
 }
 
-/* Responsive Design for Smaller Screens */
-@media (max-width: 768px) {
-    .login-register-section {
-        width: 80%; /* Adjust width for mobile view */
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Footer Styles */
-.footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-.social-links a {
-    color: white;
-    margin: 0 10px;
-    text-decoration: none;
-}
-
-.social-links a:hover {
-    color: #1da1f2;
-}
-
-/* Responsiveness */
-@media (max-width: 768px) {
-    .calendar-nav h2 {
-        font-size: 1.2rem;
-    }
-
-    .prev-month, .next-month {
-        font-size: 1.2rem;
-    }
-
-    .calendar-grid {
-        gap: 3px; /* Reduced gap for smaller screens */
-    }
-
-    .calendar-day {
-        padding: 10px;
-        min-height: 50px; /* Adjusted for smaller screens */
-    }
-}
-
-.calendar-day.not-current-month {
-    color: #cccccc; /* Grey out the non-current month days */
-}
-
-.calendar-day.today {
-    border: 2px solid red; /* Highlight the current day */
-    font-weight: bold;
-}
-.event-detail {
-    font-size: 0.75em;
-    color: #007BFF; /* Example color */
-    padding: 2px;
-    margin-top: 4px;
+.raffle-enter {
+    background-color: #3dd6d0;
+    color: #52057b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
 }
 
-.event-detail:hover {
-    color: #0056b3;
+.raffle-enter:hover {
+    background-color: #34c0eb;
+}
+
+/* Raffle creation form */
+#create-raffle {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 40px 0;
+    width: 60%;
+    margin-left: 20%;
+    
+}
+
+#create-raffle h2 {
+    margin-bottom: 20px;
+}
+
+#create-raffle form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#create-raffle input,
+#create-raffle textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Other styles remain the same */
+
+/* Style for create raffle button */
+#create-raffle-btn {
+    margin: 20px auto;
+    display: block;
+    padding: 10px 20px;
+    background-color: #4c1a57;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#create-raffle-btn:hover {
+    background-color: #753a88;
+}
+
+/* Initially hide the create raffle form */
+.hidden {
+    display: none;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+/* Expanded form styling */
+.form-expanded {
+    max-height: 1000px; /* Arbitrary large max-height for the transition effect */
+}
+
+
+
+/* Show All Expired Raffles Button */
+#show-expired-btn {
+    position: fixed;
+    right: 30px;
+    padding: 10px 20px;
+    background-color: #FF6347; /* Tomato */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+
+#show-expired-btn:hover {
+    background-color: #FF4500; /* OrangeRed */
+}
+
+/* Expired Raffles Section */
+#expired-raffles {
+    position: fixed;
+    right: 20px;
+    bottom: 80px; /* Adjust based on the height of show-expired-btn */
+    background-color: #FFF;
+    color: #333;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 15px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100; /* Ensure it appears above other page content */
+    display: none; /* Hidden by default */
+}
+
+/* Individual Expired Raffle Entry */
+.expired-raffle {
+    border-bottom: 1px solid #eee;
+    padding: 10px 5px;
+    margin-bottom: 10px;
+    border-bottom: none;
+    
+}
+
+.expired-raffle h4 {
+    margin: 0;
+    padding: 0;
+    color: #FF6347; /* Tomato */
+    font-size: 16px;
+}
+
+.expired-raffle p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
 }
 

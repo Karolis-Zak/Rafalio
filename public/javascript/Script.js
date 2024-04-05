@@ -1,117 +1,58 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Toggle between Login and Register forms
-    const loginToggle = document.getElementById('login-toggle');
-    const registerToggle = document.getElementById('register-toggle');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    const thankYouPopup = document.getElementById('thankYouPopup');
+// style.js
 
-    // Initially hide both forms and the thank you popup
-    [loginForm, registerForm, thankYouPopup].forEach(form => form.classList.add('form-hidden'));
+// Firework-like effect
+const fireworkContainer = document.createElement('div');
+fireworkContainer.style.position = 'fixed';
+fireworkContainer.style.top = '0';
+fireworkContainer.style.left = '0';
+fireworkContainer.style.width = '100vw';
+fireworkContainer.style.height = '100vh';
+fireworkContainer.style.pointerEvents = 'none';
+document.body.appendChild(fireworkContainer);
 
-    // Event listeners for the toggle buttons
-    loginToggle.addEventListener('click', () => toggleForms(loginForm, registerForm));
-    registerToggle.addEventListener('click', () => toggleForms(registerForm, loginForm));
+function createFirework() {
+    const firework = document.createElement('div');
+    firework.style.position = 'absolute';
+    firework.style.left = `${Math.random() * 100}%`;
+    firework.style.top = `${Math.random() * 100}%`;
+    firework.style.width = '5px';
+    firework.style.height = '5px';
+    firework.style.borderRadius = '50%';
+    firework.style.backgroundColor = 'transparent';
+    firework.style.boxShadow = `0 0 6px #fff, 0 0 10px #fff, 0 0 14px #f0f, 0 0 20px #0ff`;
+    firework.style.animation = 'firework-burst 700ms forwards';
+    fireworkContainer.appendChild(firework);
+    setTimeout(() => firework.remove(), 700);
+}
 
-    function toggleForms(showForm, hideForm) {
-        showForm.classList.remove('form-hidden');
-        hideForm.classList.add('form-hidden');
-    }
+setInterval(createFirework, 200);
 
-    // Real-time Password Validation Feedback
-    const passwordInput = document.getElementById('password');
-    const passwordStrengthText = document.getElementById('password-strength');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const passwordMatchText = document.getElementById('password-match');
-
-    passwordInput.addEventListener('input', () => updatePasswordStrength(passwordInput, passwordStrengthText));
-    confirmPasswordInput.addEventListener('input', () => updatePasswordMatch(passwordInput, confirmPasswordInput, passwordMatchText));
-
-    function updatePasswordStrength(passwordInput, strengthText) {
-        const password = passwordInput.value;
-        let strengthMessage = getPasswordStrengthMessage(password);
-        strengthText.textContent = strengthMessage;
-    }
-
-    function getPasswordStrengthMessage(password) {
-        let message = '';
-        if (password.length < 8) message += 'Password is too short. ';
-        if (!/[A-Z]/.test(password)) message += 'Missing uppercase letter. ';
-        if (!/\d/.test(password)) message += 'Missing a number. ';
-        if (!/[!@#$%^&*]/.test(password)) message += 'Missing a special character. ';
-        return message || "Perfect!";
-    }
-
-    function updatePasswordMatch(passwordInput, confirmPasswordInput, matchText) {
-        matchText.textContent = passwordInput.value !== confirmPasswordInput.value ? "Passwords do not match." : "";
-    }
+// Glowing animation for banner text
+const bannerText = document.querySelector('.banner h1');
+bannerText.addEventListener('mouseenter', () => {
+    bannerText.style.animation = 'glow 1.5s ease-in-out infinite alternate';
+});
+bannerText.addEventListener('mouseleave', () => {
+    bannerText.style.animation = '';
+});
 
 
 
-
-
-
-
-
-
-    document.getElementById('register-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Collect registration form data
-        const registrationData = {
-            username: document.querySelector('#register-form input[name="username"]').value,
-            firstName: document.querySelector('#register-form input[name="firstName"]').value,
-            lastName: document.querySelector('#register-form input[name="lastName"]').value,
-            email: document.querySelector('#register-form input[name="email"]').value,
-            password: document.querySelector('#register-form input[id="password"]').value,
-            confirmPassword: document.querySelector('#register-form input[id="confirm-password"]').value,
-        };
-
-        // Simple front-end validation for example purposes
-        if (registrationData.password !== registrationData.confirmPassword) {
-            alert("Passwords do not match.");
-            return;
+// Add the keyframes to the document
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes firework-burst {
+        0% {
+            opacity: 1;
+            transform: scale(0.5);
         }
-
-        // Sending the registration data to the server
-        passwordStrengthText.textContent = "";
-        // Proceed with the AJAX request to register the user
-        const username = document.querySelector('#register-form input[type="text"][placeholder="Username"]').value;
-        const firstName = document.querySelector('#register-form input[type="text"][placeholder="First Name"]').value;
-        const lastName = document.querySelector('#register-form input[type="text"][placeholder="Last Name"]').value;
-        const email = document.querySelector('#register-form input[type="email"]').value;
-
-        fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: document.querySelector('#register-form input[name="username"]').value,
-                firstName: document.querySelector('#register-form input[name="firstName"]').value,
-                lastName: document.querySelector('#register-form input[name="lastName"]').value,
-                email: document.querySelector('#register-form input[name="email"]').value,
-                password: document.querySelector('#register-form input[id="password"]').value
-            })
-        })
-        .then(response => response.text())
-        .then(data => {
-            alert(data); // Display response from the server
-        });
-        
-});
+        100% {
+            opacity: 0;
+            transform: scale(1);
+        }
+    }
+`;
+document.head.appendChild(styleSheet);
 
 
 
-    // Newsletter form submission
-    const newsletterForm = document.getElementById('newsletter-form');
-    newsletterForm.addEventListener('submit', e => {
-        e.preventDefault();
-        thankYouPopup.classList.remove('form-hidden');
-        // Implementation for AJAX call if needed
-    });
-
-
-
-
-});
