@@ -156,15 +156,21 @@ app.post('/api/raffles', (req, res) => {
 // Fetch User Info (Protected Route)
 app.get('/api/user-info', (req, res) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const token = req.headers.authorization.split(' ')[1]; // Correctly extract the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use the JWT_SECRET from your .env file
         const query = 'SELECT first_name, last_name, email FROM users WHERE user_id = ?';
+        
         db.query(query, [decoded.userId], (err, results) => {
             if (err) {
                 throw err;
             }
             if (results.length > 0) {
-                res.json(results[0]);
+                // Ensure you're sending back a JSON object with the right keys
+                res.json({
+                    firstName: results[0].first_name,
+                    lastName: results[0].last_name,
+                    email: results[0].email
+                });
             } else {
                 res.status(404).send('User not found');
             }

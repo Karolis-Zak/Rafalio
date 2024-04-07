@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    fetchUserProfile();
+});
+
 function fetchUserProfile() {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage
     if (!token) {
@@ -6,47 +10,69 @@ function fetchUserProfile() {
         return;
     }
 
+    // The endpoint should be the one configured in your server to return the user profile
     fetch('/api/user-info', {
         method: 'GET',
-        credentials: 'include', // If your API requires cookies; otherwise, this can be omitted
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`, // Correctly passing the token
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user profile. Please ensure you are logged in and try again.');
+        }
+        return response.json();
+    })
     .then(userData => {
         displayUserProfile(userData);
-        // Assuming your API returns user's enrolled raffles within userData
-        if (userData.enrolledRaffles) {
-            displayUserEnrolledRaffles(userData.enrolledRaffles);
-        } else {
-            // If enrolled raffles are not part of the user data, fetch them separately
-            fetchUserEnrolledRaffles();
-        }
     })
-    .catch(error => console.error('Error fetching user profile:', error));
+    .catch(error => {
+        console.error('Error fetching user profile:', error);
+        alert('Error fetching user profile. Please check the console for more information.');
+    });
 }
 
 function displayUserProfile(userData) {
-    document.getElementById('user-name').textContent = `${userData.first_name} ${userData.last_name}`;
-    document.getElementById('user-email').textContent = userData.email;
-    
+    // Adjust the keys according to your actual user data structure
+    document.getElementById('user-name').textContent = userData.firstName || 'First Name Not Found';
+    document.getElementById('user-last-name').textContent = userData.lastName || 'Last Name Not Found';
+    document.getElementById('user-email').textContent = userData.email || 'Email Not Found';
 }
+
+
+
+
+
+
+
+
+
+
+
 
 function fetchUserEnrolledRaffles() {
     // This function assumes a separate API call is needed to fetch enrolled raffles
     // Adjust the endpoint as necessary
+    const token = localStorage.getItem('token');
     fetch('/api/user/enrolled-raffles', {
         method: 'GET',
         credentials: 'include', // For session cookies
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // If using tokens
+            'Authorization': `Bearer ${token}`, // If using tokens
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch enrolled raffles.');
+        }
+        return response.json();
+    })
     .then(raffles => displayUserEnrolledRaffles(raffles))
-    .catch(error => console.error('Error fetching enrolled raffles:', error));
+    .catch(error => {
+        console.error('Error fetching enrolled raffles:', error);
+        alert('Error fetching enrolled raffles. Please check the console for more information.');
+    });
 }
 
 function displayUserEnrolledRaffles(raffles) {
