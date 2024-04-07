@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -11,7 +10,6 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
 
 // MySQL Database Connection
 const db = mysql.createConnection({
@@ -28,21 +26,6 @@ db.connect(err => {
     }
     console.log('Connected to MySQL');
 });
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-// Nodemailer Setup
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
-
-
 
 // User Registration Endpoint
 app.post('/register', async (req, res) => {
@@ -153,6 +136,83 @@ app.post('/api/raffles', (req, res) => {
 
 
 
+
+
+
+// Endpoint to enroll in a raffle
+app.post('/api/enroll-raffle', async (req, res) => {
+    const { userId, raffleId } = req.body; // You need to send userId and raffleId from the frontend
+    
+    // Make sure both userId and raffleId are provided
+    if (!userId || !raffleId) {
+        return res.status(400).send('Missing user ID or raffle ID');
+    }
+
+    const insertEntryQuery = 'INSERT INTO raffle_entries (user_id, raffle_id) VALUES (?, ?)';
+    db.query(insertEntryQuery, [userId, raffleId], (err, result) => {
+        if (err) {
+            console.error('Error enrolling in raffle:', err);
+            res.status(500).send('Error enrolling in raffle');
+        } else {
+            res.status(201).json({ message: 'Enrolled in raffle successfully', entryId: result.insertId });
+        }
+    });
+});
+
+// Endpoint to get the user's enrolled raffles
+app.get('/api/user-raffles', async (req, res) => {
+    const userId = req.user.id; // Get the user ID from the verified JWT token
+
+    const getRafflesQuery = `
+        SELECT raffles.* FROM raffles
+        JOIN raffle_entries ON raffles.raffle_id = raffle_entries.raffle_id
+        WHERE raffle_entries.user_id = ?
+    `;
+    db.query(getRafflesQuery, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user raffles:', err);
+            res.status(500).send('Error fetching user raffles');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+// Endpoint to fetch expired raffles
+app.get('/api/expired-raffles', (req, res) => {
+    // This will need to calculate the 3 days back date
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+    
+    const getExpiredRafflesQuery = `
+        SELECT r.*, u.username AS winner_username FROM raffles r
+        LEFT JOIN users u ON r.winner_id = u.user_id
+        WHERE r.end_time < NOW() AND r.end_time > ?
+    `;
+    db.query(getExpiredRafflesQuery, [threeDaysAgo], (err, results) => {
+        if (err) {
+            console.error('Error fetching expired raffles:', err);
+            res.status(500).send('Error fetching expired raffles');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Fetch User Info (Protected Route)
 app.get('/api/user-info', (req, res) => {
     try {
@@ -195,16 +255,15 @@ app.get('/api/raffles', (req, res) => {
 
 
 
-// Fetch User Info (Protected Route)
 app.get('/api/user-info', (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId; // Make sure this matches the payload of the JWT
         const query = 'SELECT first_name, last_name, email FROM users WHERE user_id = ?';
-        db.query(query, [decoded.userId], (err, results) => {
-            if (err) {
-                throw err;
-            }
+
+        db.query(query, [userId], (err, results) => {
+            if (err) throw err;
             if (results.length > 0) {
                 res.json(results[0]);
             } else {

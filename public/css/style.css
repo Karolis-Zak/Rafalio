@@ -443,3 +443,25 @@ input:focus, button:focus {
         width: 90%;
     }
 }
+
+
+/* Style for logout button */
+#logout-btn {
+    background-color: #ff4757; /* Bright red for visibility, change as needed */
+    color: #ffffff; /* White text */
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px; /* Adjust padding to fit your design */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1rem; /* Adjust font size as needed */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+#logout-btn:hover {
+    background-color: #e8413b; /* Darker shade of red on hover */
+}
+
+#logout-btn:focus {
+    outline: none; /* Removes the default focus outline */
+    box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.5); /* Adds a light red glow on focus */
+}

@@ -88,20 +88,68 @@ function addRaffle(raffle) {
 }
 
 function enterRaffle(button, raffleId) {
-    button.disabled = true;
-    button.innerText = 'Entered';
-    // Placeholder for server-side entry functionality
-}
+    const userId = localStorage.getItem('userId'); // You need to manage setting this when logging in
+    if (!userId) {
+        alert('You must be logged in to enter a raffle');
+        return;
+    }
 
-function setupShowExpiredButton() {
-    document.getElementById('show-expired-btn').addEventListener('click', () => {
-        const expiredSection = document.getElementById('expired-raffles');
-        expiredSection.classList.toggle('hidden');
-        if (!expiredSection.classList.contains('hidden')) {
-            showExpiredRaffles();
+    fetch('/api/enroll-raffle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId, raffleId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Problem enrolling in raffle');
         }
+        return response.json();
+    })
+    .then(data => {
+        button.disabled = true;
+        button.innerText = 'Entered';
+        console.log(data.message);
+    })
+    .catch(error => {
+        console.error('Error enrolling in raffle:', error);
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.getElementById('show-expired-btn').addEventListener('click', () => {
+    fetch('/api/expired-raffles')
+    .then(response => response.json())
+    .then(expiredRaffles => {
+        // Use the data to create and show a pop-up with the expired raffles and winners
+        // You may use a library like sweetalert2 or a simple modal in your HTML
+        showExpiredRafflesPopup(expiredRaffles);
+    })
+    .catch(error => console.error('Error fetching expired raffles:', error));
+});
+
+
+
+
+
 
 function showExpiredRaffles() {
     const expiredRaffles = getRafflesFromLocalStorage().filter(raffle => raffle.status === 'completed');

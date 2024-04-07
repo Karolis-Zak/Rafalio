@@ -43,37 +43,49 @@ function displayUserProfile(userData) {
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('token')) { // Check if the user is not logged in
+        window.location.href = '/login.html';
+        return; // Stop further execution
+    }
+    fetchUserProfile();
+    fetchUserEnrolledRaffles();
+    setupLogoutButton(); // Setup logout functionality
+});
 
 
-
-
-
+function setupLogoutButton() {
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('token'); // Remove the stored token
+        window.location.href = '/login.html'; // Redirect to login page
+    });
+}
 
 
 
 function fetchUserEnrolledRaffles() {
-    // This function assumes a separate API call is needed to fetch enrolled raffles
-    // Adjust the endpoint as necessary
-    const token = localStorage.getItem('token');
-    fetch('/api/user/enrolled-raffles', {
-        method: 'GET',
-        credentials: 'include', // For session cookies
+    const userId = localStorage.getItem('userId'); // Again, manage this on login
+    fetch(`/api/user-raffles`, {
         headers: {
-            'Authorization': `Bearer ${token}`, // If using tokens
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch enrolled raffles.');
-        }
-        return response.json();
+    .then(response => response.json())
+    .then(raffles => {
+        // Assuming you have a function to render raffles
+        renderUserRaffles(raffles);
     })
-    .then(raffles => displayUserEnrolledRaffles(raffles))
-    .catch(error => {
-        console.error('Error fetching enrolled raffles:', error);
-        alert('Error fetching enrolled raffles. Please check the console for more information.');
-    });
+    .catch(error => console.error('Failed to load user raffles:', error));
 }
+
+// Call this function on page load
+fetchUserEnrolledRaffles();
+
+
+
+
+
 
 function displayUserEnrolledRaffles(raffles) {
     const rafflesList = document.getElementById('raffles-list');
