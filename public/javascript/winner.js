@@ -48,6 +48,9 @@ const selectWinner = () => {
     });
 };
 
+
+
+
 // Set this up to run with node-cron or a similar scheduling library
 // Example: run every hour (this needs to be set up in the main server file or a separate worker script)
 const cron = require('node-cron');
