@@ -87,19 +87,25 @@ function addRaffle(raffle) {
     }
 }
 
+
+
+
+
 function enterRaffle(button, raffleId) {
-    const userId = localStorage.getItem('userId'); // You need to manage setting this when logging in
-    if (!userId) {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+    if (!token) {
         alert('You must be logged in to enter a raffle');
         return;
     }
 
+    // Assuming the backend is expecting a raffleId and not a userId, because the userId should be derived from the token
     fetch('/api/enroll-raffle', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Add the Authorization header with the token
         },
-        body: JSON.stringify({ userId, raffleId })
+        body: JSON.stringify({ raffleId })
     })
     .then(response => {
         if (!response.ok) {
@@ -108,12 +114,15 @@ function enterRaffle(button, raffleId) {
         return response.json();
     })
     .then(data => {
+        // You can add logic here to handle the successful enrollment
+        // For example, disabling the button and changing its text to indicate that the user has been enrolled
         button.disabled = true;
-        button.innerText = 'Entered';
-        console.log(data.message);
+        button.innerText = 'Enrolled';
     })
     .catch(error => {
+        // Handle the error appropriately
         console.error('Error enrolling in raffle:', error);
+        alert('Error enrolling in raffle. Please try again.');
     });
 }
 

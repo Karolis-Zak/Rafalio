@@ -21,6 +21,7 @@
     "kill-port": "^2.0.1",
     "mongodb": "^6.3.0",
     "mysql": "^2.18.1",
+    "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.8"
   },
