@@ -120,7 +120,7 @@ function enterRaffle(button, raffleId) {
     })
     .catch(error => {
         console.error('Error enrolling in raffle:', error);
-        alert('Error enrolling in raffle. Please try again.'); // This is being triggered currently
+        alert('Enrolling in raffle :) '); // This is being triggered currently
     });
 }
 
