@@ -152,15 +152,24 @@ function enrollUserInRaffle(userId, raffleId, callback) {
 
 
 
-
-// Endpoint to enroll in raffle
+// Enroll User in Raffle Endpoint
 app.post('/api/enroll-raffle', (req, res) => {
-    // Parse userId as INT and raffleId as BIGINT
-    const userId = parseInt(req.body.userId, 10);
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+        return res.status(401).send('No token provided.');
+    }
+    let userId;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.userId;
+    } catch (error) {
+        return res.status(401).send('Failed to authenticate token.');
+    }
+
     const raffleId = req.body.raffleId; // Keep as string to handle BIGINT safely
 
-    if (isNaN(userId) || !raffleId) {
-        return res.status(400).send('Invalid userId or raffleId.');
+    if (!raffleId) {
+        return res.status(400).send('Raffle ID is required.');
     }
 
     enrollUserInRaffle(userId, raffleId, (error, result) => {

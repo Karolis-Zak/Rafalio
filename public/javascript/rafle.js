@@ -114,15 +114,13 @@ function enterRaffle(button, raffleId) {
         return response.json();
     })
     .then(data => {
-        // You can add logic here to handle the successful enrollment
-        // For example, disabling the button and changing its text to indicate that the user has been enrolled
-        button.disabled = true;
-        button.innerText = 'Enrolled';
+        alert(data.message); // Show success message
+        button.disabled = true; // Disable the button
+        button.innerText = 'Enrolled'; // Update button text
     })
     .catch(error => {
-        // Handle the error appropriately
         console.error('Error enrolling in raffle:', error);
-        alert('Error enrolling in raffle. Please try again.');
+        alert('Error enrolling in raffle. Please try again.'); // This is being triggered currently
     });
 }
 
