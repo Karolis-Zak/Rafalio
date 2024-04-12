@@ -149,10 +149,7 @@ main {
     color: #ffde59;
 }
 
-.raffle-img {
-    max-width: 100%;
-    border-radius: 5px;
-}
+
 
 .raffle-description {
     margin: 10px 0;
@@ -433,8 +430,8 @@ input:focus, button:focus {
 }
 
 .raffle-entry p {
-    margin: 5px 0;
-    font-size: 0.9rem;
+    margin: 10px 0;
+    font-size: 1.1rem;
 }
 
 /* Adjustments for smaller screens */

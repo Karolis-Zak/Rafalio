@@ -30,7 +30,6 @@
             <!-- Raffle Entry -->
             <article class="raffle-entry">
                 <h2>Prize Name #1</h2>
-                <img src="prize-image1.jpg" alt="Prize Image #1" class="raffle-img">
                 <p class="raffle-description">Description of prize #1...</p>
                 <div class="raffle-timer" data-countdown="2024-12-31T23:59:59">Time left: 14d 3h 6m</div>
                 <button class="raffle-enter">Enter Raffle</button>
@@ -47,8 +46,6 @@
                 <input type="text" name="prize-name" placeholder="Prize Name" required>
                 <textarea name="prize-description" placeholder="Prize Description" required></textarea>
                 <input type="datetime-local" name="end-time" required>
-                <!-- Note: Handling file uploads would typically require server-side support -->
-                <input type="file" name="prize-image" accept="image/*">
                 <button type="submit">Create Raffle</button>
             </form>
         </section>

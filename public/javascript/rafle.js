@@ -42,7 +42,6 @@ function addRaffleToList({name, description, endTime, id, status}) {
     article.dataset.status = status;
     article.innerHTML = `
         <h2>${name}</h2>
-        <img src="placeholder-image.jpg" alt="${name}" class="raffle-img">
         <p class="raffle-description">${description}</p>
         <div class="raffle-timer" data-countdown="${endTime}">Calculating time left...</div>
         <button class="raffle-enter" onclick="enterRaffle(this, '${id}')">${status === 'active' ? 'Enter Raffle' : 'Raffle Ended'}</button>
