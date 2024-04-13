@@ -260,3 +260,30 @@ db.connect(err => {
         });
     }
 });
+
+app.get('/api/user-raffles', (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+        return res.status(401).send('No token provided.');
+    }
+    let userId;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.userId;
+    } catch (error) {
+        return res.status(401).send('Failed to authenticate token.');
+    }
+
+    const query = `
+        SELECT r.raffle_id, r.raffle_name, r.description, r.end_time
+        FROM raffle_entries re
+        JOIN raffles r ON re.raffle_id = r.raffle_id
+        WHERE re.user_id = ?
+    `;
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            return res.status(500).send('Server error');
+        }
+        res.json(results);
+    });
+});

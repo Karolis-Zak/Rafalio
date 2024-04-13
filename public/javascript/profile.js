@@ -62,52 +62,69 @@ function setupLogoutButton() {
     });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    fetchUserEnrolledRaffles(); // Fetch enrolled raffles on page load
+});
 
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Document loaded, fetching enrolled raffles...');
+    fetchUserEnrolledRaffles(); // Fetch enrolled raffles on page load
+});
 
 function fetchUserEnrolledRaffles() {
-    const userId = localStorage.getItem('userId'); // Again, manage this on login
-    fetch(`/api/user-raffles`, {
+    console.log('Fetching enrolled raffles from the server...');
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.error('No token found, redirecting to login');
+        window.location.href = '/login.html';
+        return;
+    }
+
+    fetch('/api/user-raffles', {
+        method: 'GET',
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
         }
     })
-    .then(response => response.json())
-    .then(raffles => {
-        // Assuming you have a function to render raffles
-        renderUserRaffles(raffles);
+    .then(response => {
+        console.log('Received response from server...');
+        if (!response.ok) {
+            throw new Error('Failed to fetch enrolled raffles');
+        }
+        return response.json();
     })
-    .catch(error => console.error('Failed to load user raffles:', error));
+    .then(raffles => {
+        console.log('Raffles fetched:', raffles);
+        displayUserEnrolledRaffles(raffles);
+    })
+    .catch(error => {
+        console.error('Error fetching enrolled raffles:', error);
+    });
 }
 
-// Call this function on page load
-fetchUserEnrolledRaffles();
-
-
-
-
-
-
 function displayUserEnrolledRaffles(raffles) {
+    console.log('Displaying raffles...', raffles);
     const rafflesList = document.getElementById('raffles-list');
-    rafflesList.innerHTML = ''; // Clear existing entries
+    rafflesList.innerHTML = '';
+
+    if(raffles.length === 0) {
+        console.log('No raffles found for the user.');
+        rafflesList.innerHTML = '<p>You are not enrolled in any raffles at the moment.</p>';
+        return;
+    }
 
     raffles.forEach(raffle => {
         const raffleEntry = document.createElement('div');
-        raffleEntry.classList.add('raffle-entry');
-        
-        const raffleName = document.createElement('h3');
-        raffleName.textContent = raffle.title; // Adjust based on actual field name
-        
-        const raffleDescription = document.createElement('p');
-        raffleDescription.textContent = raffle.description;
-        
-        const raffleEndTime = document.createElement('p');
-        raffleEndTime.textContent = `Ends on: ${new Date(raffle.endTime).toLocaleString()}`; // Ensure field names match your database schema
-
-        raffleEntry.appendChild(raffleName);
-        raffleEntry.appendChild(raffleDescription);
-        raffleEntry.appendChild(raffleEndTime);
-        
+        raffleEntry.className = 'raffle-entry';
+        raffleEntry.innerHTML = `
+            <h3>${raffle.raffle_name}</h3>
+            <p>${raffle.description}</p>
+            <p>Ends on: ${new Date(raffle.end_time).toLocaleString()}</p>
+        `;
         rafflesList.appendChild(raffleEntry);
     });
 }
