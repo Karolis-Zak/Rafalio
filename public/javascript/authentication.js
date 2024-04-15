@@ -61,21 +61,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return message || "Strong password!";
     }
 });
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Event listener for registration form submission
+    // Registration form submission
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
         registerForm.addEventListener('submit', function(event) {
             event.preventDefault();
+
+            // Collect registration data from the form
+            const formData = new FormData(registerForm);
             const registrationData = {
-                username: document.getElementById('username').value,
-                first_name: document.getElementById('first-name').value,
-                last_name: document.getElementById('last-name').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                username: formData.get('username'),
+                first_name: formData.get('first_name'), // Ensure the name attributes match these keys
+                last_name: formData.get('last_name'),
+                email: formData.get('email'),
+                password: formData.get('password')
             };
 
+            // Basic front-end validation for empty fields
+            for (let key in registrationData) {
+                if (registrationData.hasOwnProperty(key) && !registrationData[key]) {
+                    alert(`Please enter your ${key.replace('_', ' ')}.`);
+                    return;
+                }
+            }
+
+            // Check if passwords match (assuming there is a confirm password field)
+            const confirmPassword = formData.get('confirm_password');
+            if (registrationData.password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            // Send the registration data to the server
             fetch('/register', {
                 method: 'POST',
                 headers: {
@@ -84,52 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(registrationData)
             })
             .then(response => {
-                if (!response.ok) throw new Error('Failed to register.');
+                if (!response.ok) {
+                    return response.text().then(text => Promise.reject(text));
+                }
                 return response.json();
             })
             .then(data => {
+                // Registration success logic here
                 alert('Registration successful!');
-                // Optionally set token received from server and redirect
-                // localStorage.setItem('token', data.token);
                 window.location.href = '/login.html'; // Redirect to login page
             })
             .catch(error => {
+                // Registration error logic here
                 console.error('Error during registration:', error);
-                alert('Registration error: ' + error.message);
-            });
-        });
-    }
-
-    // Event listener for login form submission
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const loginData = {
-                username: document.getElementById('login-username').value,
-                password: document.getElementById('login-password').value
-            };
-
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(loginData)
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to log in.');
-                return response.json();
-            })
-            .then(data => {
-                alert('Login successful!');
-                // Set token received from server and redirect
-                localStorage.setItem('token', data.token);
-                window.location.href = data.redirect; // Redirect to profile page or wherever necessary
-            })
-            .catch(error => {
-                console.error('Error during login:', error);
-                alert('Login error: ' + error.message);
+                alert('Registration succesfull:');
+                window.location.href = '/login.html'; // Redirect to login page
             });
         });
     }
