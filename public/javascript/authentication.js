@@ -60,58 +60,77 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!/[!@#$%^&*]/.test(password)) message += 'Missing a special character. ';
         return message || "Strong password!";
     }
+});
 
-    const registerFormElement = document.getElementById('register-form');
-    if (registerFormElement) {
-        registerFormElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Collect registration form data
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listener for registration form submission
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
             const registrationData = {
-                username: document.querySelector('#register-form input[name="username"]').value,
-                firstName: document.querySelector('#register-form input[name="firstName"]').value,
-                lastName: document.querySelector('#register-form input[name="lastName"]').value,
-                email: document.querySelector('#register-form input[name="email"]').value,
-                password: document.querySelector('#register-form input[id="password"]').value,
-                confirmPassword: document.querySelector('#register-form input[id="confirm-password"]').value,
+                username: document.getElementById('username').value,
+                first_name: document.getElementById('first-name').value,
+                last_name: document.getElementById('last-name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
             };
 
-            // Simple front-end validation for example purposes
-            if (registrationData.password !== registrationData.confirmPassword) {
-                alert("Passwords do not match.");
-                return;
-            }
-
-            // Proceed with the AJAX request to register the user
             fetch('/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: registrationData.username,
-                    firstName: registrationData.firstName,
-                    lastName: registrationData.lastName,
-                    email: registrationData.email,
-                    password: registrationData.password
-                })
+                body: JSON.stringify(registrationData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to register.');
+                return response.json();
+            })
             .then(data => {
-                if (data.success) {
-                    // Success - proceed to login or other actions
-                    window.location.href = '/login'; // redirect to login page or profile
-                } else {
-                    // Handle errors, show message to user
-                    alert("Registration failed: " + data.message);
-                }
+                alert('Registration successful!');
+                // Optionally set token received from server and redirect
+                // localStorage.setItem('token', data.token);
+                window.location.href = '/login.html'; // Redirect to login page
             })
             .catch(error => {
                 console.error('Error during registration:', error);
-                alert("Registration failed: " + error.message);
+                alert('Registration error: ' + error.message);
             });
         });
-    } else {
-        console.error('Register form not found!');
+    }
+
+    // Event listener for login form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const loginData = {
+                username: document.getElementById('login-username').value,
+                password: document.getElementById('login-password').value
+            };
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to log in.');
+                return response.json();
+            })
+            .then(data => {
+                alert('Login successful!');
+                // Set token received from server and redirect
+                localStorage.setItem('token', data.token);
+                window.location.href = data.redirect; // Redirect to profile page or wherever necessary
+            })
+            .catch(error => {
+                console.error('Error during login:', error);
+                alert('Login error: ' + error.message);
+            });
+        });
     }
 });

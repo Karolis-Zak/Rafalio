@@ -1,5 +1,4 @@
 
-/* Basic Reset */
 html, body {
     margin: 0;
     padding: 0;
@@ -14,13 +13,10 @@ html, body {
     justify-content: center;
 }
 
-
-
 body {
     animation: glowingBackground 10s ease infinite;
 }
 
-/* Stylish Header */
 header {
     width: 100%;
     background: #2e005e;
@@ -62,7 +58,6 @@ header {
     transform: scaleX(1);
 }
 
-/* Banner with Glowing Text */
 .banner {
     text-align: center;
 }
@@ -83,7 +78,7 @@ header {
 
 
 
-/* Main Content Styling */
+
 main {
 
     padding: 2rem;
@@ -93,7 +88,7 @@ main {
     text-align: center;
 }
 
-/* Footer with Pulse Effect */
+
 footer {
     position: fixed;
     padding: 1rem;
@@ -114,20 +109,6 @@ footer {
     animation: pulse 2s infinite;
 }
 
-
-
-
-
-
-
-
-
-/* Main content */
-main {
-    width: 80%;
-    margin: auto;
-    text-align: center;
-}
 
 /* Raffle list and entries */
 #raffle-list {
@@ -203,9 +184,7 @@ main {
     border: none;
 }
 
-/* Other styles remain the same */
 
-/* Style for create raffle button */
 #create-raffle-btn {
     margin: 20px auto;
     display: block;
@@ -222,7 +201,7 @@ main {
     background-color: #753a88;
 }
 
-/* Initially hide the create raffle form */
+
 .hidden {
     display: none;
     overflow: hidden;
@@ -231,7 +210,6 @@ main {
 
 
 
-/* Show All Expired Raffles Button */
 #show-expired-btn {
     position: fixed;
     right: 30px;
@@ -419,6 +397,13 @@ input:focus, button:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.raffle {
+
+border: color(rec2020 red green blue);
+
+
 }
 
 

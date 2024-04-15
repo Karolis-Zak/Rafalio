@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// MySQL Database Connection
+//---------------------------------------------------------------------- MySQL Database Connection
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -27,7 +27,7 @@ db.connect(err => {
     console.log('Connected to MySQL');
 });
 
-// Middleware to authenticate and set user id
+//---------------------------------------------------------------------- Middleware to authenticate and set user id
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -39,7 +39,7 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
-// User Registration Endpoint
+//---------------------------------------------------------------------- User Registration Endpoint
 app.post('/register', async (req, res) => {
     const { username, first_name, last_name, email, password } = req.body;
     if (!username || !email || !password) {
@@ -62,7 +62,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// User Login Endpoint
+//---------------------------------------------------------------------- User Login Endpoint
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     const query = 'SELECT user_id, password FROM users WHERE username = ?';
@@ -79,7 +79,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Endpoint to create a new raffle
+//---------------------------------------------------------------------- Endpoint to create a new raffle
 app.post('/api/raffles', authenticateToken, (req, res) => {
     const { raffle_name, description, end_time } = req.body;
     const insertRaffleQuery = 'INSERT INTO raffles (raffle_name, description, end_time) VALUES (?, ?, ?)';
@@ -92,7 +92,7 @@ app.post('/api/raffles', authenticateToken, (req, res) => {
     });
 });
 
-// Endpoint to fetch all raffles
+//---------------------------------------------------------------------- Endpoint to fetch all raffles
 app.get('/api/raffles', authenticateToken, (req, res) => {
     const selectRafflesQuery = 'SELECT * FROM raffles';
     db.query(selectRafflesQuery, (err, results) => {
@@ -104,7 +104,7 @@ app.get('/api/raffles', authenticateToken, (req, res) => {
     });
 });
 
-// Endpoint to enroll in a raffle
+//----------------------------------------------------------------------  Endpoint to enroll in a raffle
 app.post('/api/enroll-raffle', authenticateToken, (req, res) => {
     const { raffleId } = req.body;
     const userId = req.user.userId; // Corrected to use req.user.userId
@@ -118,7 +118,7 @@ app.post('/api/enroll-raffle', authenticateToken, (req, res) => {
     });
 });
 
-// Endpoint to fetch raffles a user is enrolled in
+//---------------------------------------------------------------------- Endpoint to fetch raffles a user is enrolled in
 app.get('/api/user-raffles', authenticateToken, (req, res) => {
     const userId = req.user.userId; // Corrected to use req.user.userId
     const selectUserRafflesQuery = `
@@ -136,7 +136,7 @@ app.get('/api/user-raffles', authenticateToken, (req, res) => {
     });
 });
 
-// Endpoint to get user information for the profile
+//----------------------------------------------------------------------  Endpoint to get user information for the profile
 app.get('/api/user-info', authenticateToken, (req, res) => {
     const query = 'SELECT username, first_name, last_name, email FROM users WHERE user_id = ?';
     db.query(query, [req.user.userId], (err, results) => {
@@ -151,6 +151,66 @@ app.get('/api/user-info', authenticateToken, (req, res) => {
         }
     });
 });
+
+
+
+//---------------------------------------------------------------------- API endpoint to fetch expired raffles:
+
+app.get('/api/expired-raffles', authenticateToken, (req, res) => {
+    const selectExpiredRafflesQuery = 'SELECT * FROM raffles WHERE end_time < NOW() ORDER BY end_time DESC';
+    db.query(selectExpiredRafflesQuery, (err, results) => {
+        if (err) {
+            console.error('Error fetching expired raffles:', err);
+            return res.status(500).send('Error fetching expired raffles');
+        }
+        res.json(results);
+    });
+});
+
+
+app.get('/api/select-winner/:raffleId', authenticateToken, (req, res) => {
+    const { raffleId } = req.params;
+    // Adjust the query to join with the users table to fetch user details
+    const selectEntrantsQuery = `
+        SELECT re.user_id, u.first_name, u.last_name
+        FROM raffle_entries re
+        JOIN users u ON re.user_id = u.user_id
+        WHERE re.raffle_id = ?;
+    `;
+
+    db.query(selectEntrantsQuery, [raffleId], (err, results) => {
+        if (err) {
+            console.error('Error selecting raffle entrants:', err);
+            return res.status(500).send('Error selecting raffle entrants');
+        }
+
+        if (results.length > 0) {
+            const randomIndex = Math.floor(Math.random() * results.length);
+            const winner = results[randomIndex];
+            // Send back a more detailed winner object
+            res.json({
+                user_id: winner.user_id,
+                name: winner.first_name + ' ' + winner.last_name // You could also include additional details if necessary
+            });
+        } else {
+            res.status(404).send('No entries found for this raffle.');
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Start the server
 app.listen(port, () => {
