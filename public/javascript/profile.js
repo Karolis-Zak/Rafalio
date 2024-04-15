@@ -1,26 +1,26 @@
+// profile.js
 document.addEventListener('DOMContentLoaded', () => {
     fetchUserProfile();
+    fetchUserEnrolledRaffles();
+    setupLogoutButton();
 });
 
 function fetchUserProfile() {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
     if (!token) {
-        console.error('No token found, redirecting to login');
-        window.location.href = '/login.html';
+        redirectToLogin();
         return;
     }
 
-    // The endpoint should be the one configured in your server to return the user profile
     fetch('/api/user-info', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Correctly passing the token
+            'Authorization': `Bearer ${token}`
         }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to fetch user profile. Please ensure you are logged in and try again.');
+            throw new Error('Failed to fetch user profile');
         }
         return response.json();
     })
@@ -34,53 +34,15 @@ function fetchUserProfile() {
 }
 
 function displayUserProfile(userData) {
-    // Adjust the keys according to your actual user data structure
-    document.getElementById('user-name').textContent = userData.firstName || 'First Name Not Found';
-    document.getElementById('user-last-name').textContent = userData.lastName || 'Last Name Not Found';
+    document.getElementById('user-name').textContent = userData.first_name || 'First Name Not Found';
+    document.getElementById('user-last-name').textContent = userData.last_name || 'Last Name Not Found';
     document.getElementById('user-email').textContent = userData.email || 'Email Not Found';
 }
 
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (!localStorage.getItem('token')) { // Check if the user is not logged in
-        window.location.href = '/login.html';
-        return; // Stop further execution
-    }
-    fetchUserProfile();
-    fetchUserEnrolledRaffles();
-    setupLogoutButton(); // Setup logout functionality
-});
-
-
-function setupLogoutButton() {
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('token'); // Remove the stored token
-        window.location.href = '/login.html'; // Redirect to login page
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    fetchUserEnrolledRaffles(); // Fetch enrolled raffles on page load
-});
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Document loaded, fetching enrolled raffles...');
-    fetchUserEnrolledRaffles(); // Fetch enrolled raffles on page load
-});
-
 function fetchUserEnrolledRaffles() {
-    console.log('Fetching enrolled raffles from the server...');
     const token = localStorage.getItem('token');
     if (!token) {
-        console.error('No token found, redirecting to login');
-        window.location.href = '/login.html';
+        redirectToLogin();
         return;
     }
 
@@ -91,15 +53,13 @@ function fetchUserEnrolledRaffles() {
         }
     })
     .then(response => {
-        console.log('Received response from server...');
         if (!response.ok) {
-            throw new Error('Failed to fetch enrolled raffles');
+            throw new Error('Error fetching enrolled raffles');
         }
         return response.json();
     })
-    .then(raffles => {
-        console.log('Raffles fetched:', raffles);
-        displayUserEnrolledRaffles(raffles);
+    .then(data => {
+        displayUserEnrolledRaffles(data);
     })
     .catch(error => {
         console.error('Error fetching enrolled raffles:', error);
@@ -107,24 +67,28 @@ function fetchUserEnrolledRaffles() {
 }
 
 function displayUserEnrolledRaffles(raffles) {
-    console.log('Displaying raffles...', raffles);
     const rafflesList = document.getElementById('raffles-list');
     rafflesList.innerHTML = '';
 
-    if(raffles.length === 0) {
-        console.log('No raffles found for the user.');
-        rafflesList.innerHTML = '<p>You are not enrolled in any raffles at the moment.</p>';
-        return;
-    }
-
+    const now = new Date().getTime();
     raffles.forEach(raffle => {
-        const raffleEntry = document.createElement('div');
-        raffleEntry.className = 'raffle-entry';
-        raffleEntry.innerHTML = `
-            <h3>${raffle.raffle_name}</h3>
-            <p>${raffle.description}</p>
-            <p>Ends on: ${new Date(raffle.end_time).toLocaleString()}</p>
-        `;
-        rafflesList.appendChild(raffleEntry);
+        const raffleEndTime = new Date(raffle.end_time).getTime();
+        if (raffleEndTime > now) { // Only display active raffles
+            const listItem = document.createElement('li');
+            listItem.textContent = `Raffle Name: ${raffle.raffle_name}, Ends on: ${new Date(raffle.end_time).toLocaleString()}`;
+            rafflesList.appendChild(listItem);
+        }
     });
+}
+
+function setupLogoutButton() {
+    const logoutButton = document.getElementById('logout-btn'); // Make sure the ID matches your HTML
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        redirectToLogin();
+    });
+}
+
+function redirectToLogin() {
+    window.location.href = '/login.html'; // Make sure the path is correct
 }

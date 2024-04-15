@@ -1,225 +1,188 @@
 document.addEventListener('DOMContentLoaded', function() {
-    loadRaffles();
+    checkTokenAndLoadRaffles();
     setupCreateRaffleButton();
+    setupShowExpiredRafflesButton();
     handleRaffleFormSubmission();
-    setupShowExpiredButton();
 });
 
-function getRafflesFromLocalStorage() {
-    return JSON.parse(localStorage.getItem('raffles')) || [];
+function checkTokenAndLoadRaffles() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        redirectToLogin();
+    } else {
+        loadRaffles();
+    }
 }
 
-function saveRafflesToLocalStorage(raffles) {
-    localStorage.setItem('raffles', JSON.stringify(raffles));
+function redirectToLogin() {
+    window.location.href = '/login.html'; // Update with your login page path
 }
 
 function loadRaffles() {
-    let raffles = getRafflesFromLocalStorage();
-    const now = new Date().getTime();
-    raffles = raffles.filter(raffle => {
-        // Remove raffles expired for more than 24 hours
-        if (raffle.status === 'completed' && now - new Date(raffle.endTime).getTime() > 24 * 60 * 60 * 1000) {
-            return false;
+    fetch('/api/raffles', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
-        return true;
-    });
-    saveRafflesToLocalStorage(raffles); // Update local storage after cleanup
-    displayRaffles(raffles.filter(raffle => raffle.status === 'active')); // Display only active raffles
+    })
+    .then(handleResponse)
+    .then(raffles => {
+        displayRaffles(raffles);
+    })
+    .catch(handleNetworkError);
+}
+
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return response.json();
+}
+
+function handleNetworkError(error) {
+    console.error('Network error:', error);
+    alert('A network error occurred. Check the console for more details.');
 }
 
 function displayRaffles(raffles) {
     const list = document.getElementById('raffle-list');
-    list.innerHTML = ''; // Clear existing raffles
-    raffles.forEach(raffle => addRaffleToList(raffle));
-    initializeAllCountdowns();
+    list.innerHTML = ''; // Clear the list before adding new items
+    raffles.forEach(raffle => {
+        const endTime = new Date(raffle.end_time).getTime();
+        if (endTime > Date.now()) {
+            // Only display active raffles
+            addRaffleToList(raffle);
+        }
+    });
 }
 
-function addRaffleToList({name, description, endTime, id, status}) {
+function addRaffleToList(raffle) {
     const list = document.getElementById('raffle-list');
     const article = document.createElement('article');
     article.classList.add('raffle-entry');
-    article.dataset.id = id;
-    article.dataset.status = status;
     article.innerHTML = `
-        <h2>${name}</h2>
-        <p class="raffle-description">${description}</p>
-        <div class="raffle-timer" data-countdown="${endTime}">Calculating time left...</div>
-        <button class="raffle-enter" onclick="enterRaffle(this, '${id}')">${status === 'active' ? 'Enter Raffle' : 'Raffle Ended'}</button>
+        <h2>${raffle.raffle_name}</h2>
+        <p class="raffle-description">${raffle.description}</p>
+        <div id="timer-${raffle.raffle_id}" class="raffle-timer"></div>
+        <button class="raffle-enter" data-raffle-id="${raffle.raffle_id}">Enter Raffle</button>
     `;
-    if (status === 'active') {
-        list.appendChild(article);
-    }
+    list.appendChild(article);
+    initializeCountdownTimer(raffle);
+    const enterButton = article.querySelector('.raffle-enter');
+    enterButton.addEventListener('click', function() {
+        enterRaffle(raffle.raffle_id);
+    });
+}
+
+function initializeCountdownTimer(raffle) {
+    const timerElement = document.getElementById(`timer-${raffle.raffle_id}`);
+    const endTime = new Date(raffle.end_time).getTime();
+    const intervalId = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+        if (distance < 0) {
+            clearInterval(intervalId);
+            timerElement.innerText = 'Expired';
+            return;
+        }
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        timerElement.innerText = `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
 }
 
 function setupCreateRaffleButton() {
     const btn = document.getElementById('create-raffle-btn');
-    btn.addEventListener('click', () => {
-        document.getElementById('create-raffle').classList.toggle('hidden');
-    });
+    if (btn) {
+        btn.addEventListener('click', () => {
+            document.getElementById('create-raffle').classList.toggle('hidden');
+        });
+    }
+}
+
+function setupShowExpiredRafflesButton() {
+    const showExpiredBtn = document.getElementById('show-expired-btn');
+    if (showExpiredBtn) {
+        showExpiredBtn.addEventListener('click', () => {
+            const expiredRafflesSection = document.getElementById('expired-raffles');
+            expiredRafflesSection.classList.toggle('hidden');
+            if (!expiredRafflesSection.classList.contains('hidden')) {
+                loadExpiredRaffles();
+            }
+        });
+    }
 }
 
 function handleRaffleFormSubmission() {
-    const form = document.querySelector('#create-raffle form');
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const newRaffle = {
-            name: formData.get('prize-name'),
-            description: formData.get('prize-description'),
-            endTime: formData.get('end-time'),
-            id: Date.now().toString(),
-            status: 'active'
-        };
-        addRaffle(newRaffle);
-        form.reset();
-        document.getElementById('create-raffle').classList.add('hidden');
-        alert('Raffle created successfully!');
-    });
-}
+    const form = document.getElementById('raffle-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const raffleData = {
+                raffle_name: formData.get('prize-name'),
+                description: formData.get('prize-description'),
+                end_time: formData.get('end-time')
+            };
 
-function addRaffle(raffle) {
-    const raffles = getRafflesFromLocalStorage();
-    raffles.push(raffle);
-    saveRafflesToLocalStorage(raffles);
-    if (raffle.status === 'active') {
-        addRaffleToList(raffle);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                redirectToLogin();
+                return;
+            }
+
+            fetch('/api/raffles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(raffleData)
+            })
+            .then(handleResponse)
+            .then(() => {
+                alert('Raffle created successfully!');
+                form.reset();
+                loadRaffles(); // Reload the raffles to include the new one
+            })
+            .catch(handleNetworkError);
+        });
     }
 }
 
+function loadExpiredRaffles() {
+    // Assuming the logic is similar to loadRaffles but filters for expired raffles.
+    // Implement the logic to load and display expired raffles here.
+    // This may involve a different endpoint or additional parameter to fetch only expired raffles.
+}
 
-
-
-
-function enterRaffle(button, raffleId) {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+function enterRaffle(raffleId) {
+    const token = localStorage.getItem('token');
     if (!token) {
-        alert('You must be logged in to enter a raffle');
+        redirectToLogin();
         return;
     }
 
-    // Assuming the backend is expecting a raffleId and not a userId, because the userId should be derived from the token
     fetch('/api/enroll-raffle', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Add the Authorization header with the token
+            'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({ raffleId })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Problem enrolling in raffle');
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert(data.message); // Show success message
-        button.disabled = true; // Disable the button
-        button.innerText = 'Enrolled'; // Update button text
+    .then(handleResponse)
+    .then(() => {
+        alert('Enrolled successfully!');
+        loadRaffles(); // Update the list to reflect the new status
     })
     .catch(error => {
+        alert(`Error enrolling in raffle: ${error.message}`);
         console.error('Error enrolling in raffle:', error);
-        alert('Enrolling in raffle :) '); // This is being triggered currently
     });
 }
 
+// Ensure this script is robust enough to work with your backend API and the HTML structure.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.getElementById('show-expired-btn').addEventListener('click', () => {
-    fetch('/api/expired-raffles')
-    .then(response => response.json())
-    .then(expiredRaffles => {
-        // Use the data to create and show a pop-up with the expired raffles and winners
-        // You may use a library like sweetalert2 or a simple modal in your HTML
-        showExpiredRafflesPopup(expiredRaffles);
-    })
-    .catch(error => console.error('Error fetching expired raffles:', error));
-});
-
-
-
-
-
-
-function showExpiredRaffles() {
-    const expiredRaffles = getRafflesFromLocalStorage().filter(raffle => raffle.status === 'completed');
-    const expiredSection = document.getElementById('expired-raffles');
-    expiredSection.innerHTML = ''; // Clear the section first
-
-    expiredRaffles.forEach(raffle => {
-        const div = document.createElement('div');
-        div.textContent = `${raffle.name}: Expired on ${new Date(raffle.endTime).toLocaleString()}`;
-        expiredSection.appendChild(div);
-    });
-
-    // This ensures the section is visible if hidden by previous interactions
-    expiredSection.classList.remove('hidden');
-}
-
-
-function initializeAllCountdowns() {
-    document.querySelectorAll('.raffle-timer').forEach(timer => {
-        const endTime = new Date(timer.dataset.countdown).getTime();
-        const interval = setInterval(() => {
-            const now = new Date().getTime();
-            const timeLeft = endTime - now;
-            if (timeLeft < 0) {
-                clearInterval(interval);
-                timer.innerHTML = "Raffle Ended";
-                const button = timer.nextElementSibling;
-                if (button) {
-                    button.innerText = "Raffle Ended";
-                    button.disabled = true;
-                }
-                const article = timer.closest('.raffle-entry');
-                updateRaffleStatus(article.dataset.id, 'completed');
-                return;
-            }
-            timer.innerHTML = formatTimeLeft(timeLeft);
-        }, 1000);
-    });
-}
-
-function updateRaffleStatus(id, newStatus) {
-    const raffles = getRafflesFromLocalStorage();
-    const index = raffles.findIndex(raffle => raffle.id === id);
-    if (index !== -1) {
-        raffles[index].status = newStatus;
-        saveRafflesToLocalStorage(raffles);
-    }
-}
-
-function formatTimeLeft(timeLeft) {
-    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    return `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-}
-
-function setupShowExpiredButton() {
-    const btn = document.getElementById('show-expired-btn');
-    btn.addEventListener('click', () => {
-        const expiredSection = document.getElementById('expired-raffles');
-        expiredSection.classList.toggle('hidden');
-        if (!expiredSection.classList.contains('hidden')) {
-            showExpiredRaffles();
-        }
-    });
-}
