@@ -30,7 +30,7 @@ function displayExpiredRaffles(raffles) {
             <h3>${raffle.raffle_name}</h3>
             <p>Description: ${raffle.description}</p>
             <p>Ended on: ${new Date(raffle.end_time).toLocaleString()}</p>
-            <button onclick="selectWinner('${raffle.raffle_id}', this)">Select Winner</button>
+            <button onclick="selectWinner('${raffle.raffle_id}', this)">Show Winner</button>
             <div id="winner-${raffle.raffle_id}" class="winner-info"></div>
         `;
         container.appendChild(raffleElement);
